@@ -5,7 +5,7 @@ import math
 import random
 from datetime import datetime
 import pickle
-from utils import pkl_load, pad_nan_to_target
+from .utils import pkl_load, pad_nan_to_target
 from scipy.io.arff import loadarff
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
@@ -23,9 +23,9 @@ def load_UCR(dataset):
     for i, l in enumerate(labels):
         transform[l] = i
 
-    train = train_array[:, 1:].astype(np.float64)
+    train = train_array[:, 1:].astype(float)
     train_labels = np.vectorize(transform.get)(train_array[:, 0])
-    test = test_array[:, 1:].astype(np.float64)
+    test = test_array[:, 1:].astype(float)
     test_labels = np.vectorize(transform.get)(test_array[:, 0])
 
     # Normalization for non-normalized datasets
@@ -130,8 +130,8 @@ def _get_time_features(dt):
         dt.day.to_numpy(),
         dt.dayofyear.to_numpy(),
         dt.month.to_numpy(),
-        dt.weekofyear.to_numpy(),
-    ], axis=1).astype(np.float)
+        dt.isocalendar().week.to_numpy(),
+    ], axis=1).astype(float)
 
 
 def load_forecast_csv(name, univar=False):
